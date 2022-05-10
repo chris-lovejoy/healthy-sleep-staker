@@ -17,12 +17,9 @@ contract SleepStaker {
         uint256 stakeAmount;
     }
 
-    // TODO: consider making mapping for challenge creator? (as per:
-    // https://github.com/Nateliason/smart-contract-examples/blob/master/03%20CryptoZombies/06_FinalLevel6/ZombieFactory.sol
-
     Challenge[] public challenges;
 
-    event ChallengeCreated(uint256 startDate, uint256 endDate, uint32 sleepHours, uint256 stakeAmount);
+    event ChallengeCreated(uint id, uint256 startDate, uint256 endDate, uint32 sleepHours, uint256 stakeAmount);
 
     // variables to add:
     // (i) mapping - record of balances put in
@@ -35,16 +32,18 @@ contract SleepStaker {
     }
 
     function createChallenge (uint256 _startDate, uint256 _endDate, uint32 _sleepHours, uint256 _stakeAmount) public {
-        uint id = 1; // TODO: update to gradually increment
         challenges.push(Challenge(_startDate, _endDate, _sleepHours, _stakeAmount));
-        emit ChallengeCreated(_startDate, _endDate, _sleepHours, _stakeAmount);
+        uint id = challenges.length - 1;
+        emit ChallengeCreated(id, _startDate, _endDate, _sleepHours, _stakeAmount);
     }
 
-    // function viewChallenge (uint _challengeId) public returns(unit256) {
-        // Initially, just report challenge with id 1 - to update later
-        // challenge = challenges[_challengeId];
-        // return 2; // challenge.startDate;
-    // }
+    function viewChallenge (uint _challengeId) public view returns(uint256) {
+        Challenge memory selectedChallenge;
+        selectedChallenge = challenges[_challengeId];
+        console.log(selectedChallenge.startDate);
+        return selectedChallenge.startDate; // temporary: use this for testing
+        // return selectedChallenge.startDate, selectedChallenge.endDate, selectedChallenge.sleepHours, selectedChallenge.stakeAmount;
+    }
 
 
     // function - stake
