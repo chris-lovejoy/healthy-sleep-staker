@@ -15,6 +15,8 @@ contract SleepStaker {
         uint256 endDate;
         uint32 sleepHours;
         uint256 stakeAmount;
+        // TODO: add list of addresses, for people in the challenge - appended within stake()
+        // TODO: consider adding a 'challenge complete' parameter
     }
 
     Challenge[] public challenges;
@@ -23,8 +25,6 @@ contract SleepStaker {
 
     // variables to add:
     // (i) mapping - record of balances put in
-    // (ii) total_sleep_hours required
-    // (iii) deadline (time)
     // (iv) mapping - record of amount of sleep completed [added via oura ring]
 
     constructor () {
@@ -45,20 +45,24 @@ contract SleepStaker {
         // return selectedChallenge.startDate, selectedChallenge.endDate, selectedChallenge.sleepHours, selectedChallenge.stakeAmount;
     }
 
+    function stake(uint _challengeId) public payable returns (uint256) {
+        uint256 requiredStake = challenges[_challengeId].stakeAmount;
+        require(msg.value == requiredStake, "Incorrect amount");
+        // TODO: add functionality to execute the staking
+        return requiredStake;
+    }
+    
 
-    // function - stake
+    // function - timeleft OR daysleft [if function required]
 
-
-    // function - set sleep hour target
-
-
-    // function - timeleft
 
 
     // function - check who met the requirements [ie. slept enough]
+        // or rather - allow people to add their amount of sleep
         // ()
 
 
     // function - execute redistribute at the end
+        // requires everybody to have submitted sleep results
 
 }
