@@ -51,5 +51,21 @@ describe("Sleep Staker", function () {
         const stakeResult = await staker.stake(0, {value: ethers.utils.parseEther("0.001")});
         console.log('\t'," 🏷  stakeResult: ",stakeResult.hash)
 
+    });
+    it("Initial test of viewChallengers()", async function() {
+        const Staker = await ethers.getContractFactory("SleepStaker");
+        const staker = await Staker.deploy();
+        await staker.deployed();
+
+        const addChallengeTx = await staker.createChallenge(10, 11, 12, ethers.utils.parseEther("0.001"));
+        await addChallengeTx.wait()
+
+        const stakeResult = await staker.stake(0, {value: ethers.utils.parseEther("0.001")});
+        console.log('\t'," 🏷  stakeResult: ",stakeResult.hash)
+
+        const viewChallengersTx = await staker.viewChallengers(0);
+        await viewChallengersTx.wait()
+        console.log('\t'," 🏷  viewChallengersResult: ",viewChallengersTx.hash)
+
     })
 });

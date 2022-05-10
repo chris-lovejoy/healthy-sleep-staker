@@ -6,7 +6,7 @@ import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json'
 function App() {
 
   const [currentAccount, setCurrentAccount] = useState("");
-  const sleepStakerContractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; // to modiofy
+  const sleepStakerContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // to modiofy
   const sleepStakerABI = abi.abi;
 
 
@@ -100,6 +100,7 @@ function App() {
       const { ethereum } = window;
 
       if (ethereum) {
+        // const provider = new ethers.providers.JsonRpcProvider();
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
@@ -121,8 +122,24 @@ function App() {
   }
 
   const stakeToJoin = async event => {
-    event.preventDefault()
-    console.log(stakeAmount)
+    event.preventDefault();
+    console.log(stakeAmount);
+
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
+        
+        sleepStakerContract.stake(selChallengeId);
+      } else {
+      console.log("Ethereum object doesn't exist!");
+    }
+  } catch (error) {
+    console.log(error);
+    }
   }
 
   return (
@@ -197,7 +214,7 @@ function App() {
             <div>
                 <h4>Challenge details:</h4>
                 <p>Challenge ID: {selChallengeId}</p>
-                <p>(other challenges details to be added here)</p>
+                <p>(other challenges details to be added here - as an unordered list)</p>
             </div>
           </>
         )}
@@ -205,7 +222,7 @@ function App() {
 
           <div>
             <h4>Join below:</h4>
-            <p>Stake ROSE to join the challenge:</p>
+            <p>Stake ROSE to join challenge {selChallengeId}:</p>
             <button onClick={stakeToJoin}>Stake</button>
           </div>
 
