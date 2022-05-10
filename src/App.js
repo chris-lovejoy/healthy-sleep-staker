@@ -65,6 +65,8 @@ function App() {
   const [endDate, setEndDate] = useState("");
   const [sleepHours, setSleepHours] = useState("");
   const [stakeAmount, setStakeAmount] = useState("");
+  const [selChallengeId, setSelChallengeId] = useState("");
+  const [showChallengeDetails, setShowChallengeDetails] = useState();
 
   const handleStartDateChange = (event) => {
     console.log("Start Date:", event.target.value)
@@ -86,6 +88,11 @@ function App() {
     setStakeAmount(event.target.value)
   }
 
+  const handleSelChallengeIdChange = (event) => {
+    console.log("Challenge Id selected:", event.target.value)
+    setSelChallengeId(event.target.value);
+  }
+
   const submit_challenge = async event => {
     event.preventDefault()
 
@@ -105,6 +112,17 @@ function App() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const viewChallenge = async event => {
+    event.preventDefault()
+    console.log(selChallengeId)
+    setShowChallengeDetails(1);
+  }
+
+  const stakeToJoin = async event => {
+    event.preventDefault()
+    console.log(stakeAmount)
   }
 
   return (
@@ -140,7 +158,7 @@ function App() {
                 onChange={handleEndDateChange}
                 />
             </div>
-            <div>Average number of hours to sleep:
+            <div>Total hours to sleep (target):
               <input
                 value={sleepHours}
                 onChange={handleSleepHoursChange}
@@ -162,7 +180,34 @@ function App() {
             the average number of hours to sleep is {sleepHours}. Is this correct?</p>
 
       <h2>Join a challenge</h2>
+      
+          <div>Enter the challenge Id: 
+              <input
+                value={selChallengeId}
+                onChange={handleSelChallengeIdChange}
+                />
+          </div>
 
+          <div>
+              <button onClick={viewChallenge}>View challenge details</button>
+          </div>
+
+          {showChallengeDetails && (
+          <>
+            <div>
+                <h4>Challenge details:</h4>
+                <p>Challenge ID: {selChallengeId}</p>
+                <p>(other challenges details to be added here)</p>
+            </div>
+          </>
+        )}
+
+
+          <div>
+            <h4>Join below:</h4>
+            <p>Stake ROSE to join the challenge:</p>
+            <button onClick={stakeToJoin}>Stake</button>
+          </div>
 
 
       <h2>Conclude a challenge</h2>
