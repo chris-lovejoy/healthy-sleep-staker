@@ -1,16 +1,13 @@
 import './App.css';
 import React, {useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { connectWallet, checkIfWalletIsConnected } from './WalletConnect'
-// TODO: add abi import
-
-
+import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
 
 function App() {
 
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // to modiofy
-  // const contractABI = abi.abi;
+  const sleepStakerContractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; // to modiofy
+  const sleepStakerABI = abi.abi;
 
 
   const checkIfWalletIsConnected = async () => {
@@ -70,29 +67,51 @@ function App() {
   const [stakeAmount, setStakeAmount] = useState("");
 
   const handleStartDateChange = (event) => {
-    console.log(event.target.value)
+    console.log("Start Date:", event.target.value)
     setStartDate(event.target.value)
   }
 
   const handleEndDateChange = (event) => {
-    console.log(event.target.value)
+    console.log("End Date:", event.target.value)
     setEndDate(event.target.value)
   }
 
   const handleSleepHoursChange = (event) => {
-    console.log(event.target.value)
+    console.log("Total hours of sleep", event.target.value)
     setSleepHours(event.target.value)
   }
 
    const handleStakeAmountChange = (event) => {
-    console.log(event.target.value)
+    console.log("Stake Amount", event.target.value)
     setStakeAmount(event.target.value)
   }
 
+  const submit_challenge = async event => {
+    event.preventDefault()
+
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
+        
+        sleepStakerContract.createChallenge(startDate, endDate, sleepHours, stakeAmount)
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="App">
       <h1>Welcome to the Healthy Sleep Staker</h1>
+      <p>(add a description here + an icon).</p> 
+      <p>Note: The challenge starts on and ends at 12pm (noon) on the respective days.</p>
 
       {!currentAccount && (
         <>
@@ -106,7 +125,7 @@ function App() {
         )}
 
       <h2>Create a challenge</h2>
-          <form>
+          <form onSubmit={submit_challenge}>
             <div>Starting date: 
               <input
                 placeholder="format: YYYY-MM-DD" 
@@ -133,7 +152,10 @@ function App() {
                 onChange={handleStakeAmountChange}
                 />
             </div>
+
+            <button type='submit'>Submit challenge to the Oasis blockchain</button>
           </form>
+
 
           {/* TEMPORARY TEXT - FOR DEVELOPMENT */}
            <p>The starting date is {startDate}, the ending date is {endDate} and 
