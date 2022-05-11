@@ -8,7 +8,7 @@ import 'hardhat/console.sol';
 
 contract SleepStaker {
 
-        struct Challenge {
+   struct Challenge {
         uint256 startDate;
         uint256 endDate;
         uint32 sleepHours;
@@ -18,6 +18,8 @@ contract SleepStaker {
     Challenge[] public challenges;
     mapping(uint => address[]) public challengers;
     mapping(address => uint) public hoursSlept;
+    mapping(uint => bool) public challengeCompleted;
+    mapping(uint => address[]) public challengeWinners;
 
     event ChallengeCreated(uint id, uint256 startDate, uint256 endDate, uint32 sleepHours, uint256 stakeAmount);
     event ChallengerJoined(uint challengeId, address challenger);
@@ -61,14 +63,36 @@ contract SleepStaker {
         hoursSlept[msg.sender] = _sleepRecordHours;
     }
 
-    function checkSleepDataUpload (uint _challengeId) public view returns(bool) {
+    function assessDataUpload (uint _challengeId) public {
         address[] memory challengerList = challengers[_challengeId];
-        bool allCompleted = true;
+        challengeCompleted[_challengeId] = true;
         for (uint i = 0; i < challengerList.length; i++) {
             if (hoursSlept[challengerList[i]] == 0) {
-                allCompleted = false;
+                challengeCompleted[_challengeId] = false;
             }
         }
-        return allCompleted;
     }
+
+    function checkDataUpload (uint _challengeId) public view returns(bool) {
+        return challengeCompleted[_challengeId];
+    }
+
+    function identifyChallengeWinners (uint _challengeId) public {
+        address[] memory challengerList = challengers[_challengeId];
+    for (uint i = 0; i < challengerList.length; i++) {
+        if (hoursSlept[challengerList[i]] >= challenges[_challengeId].sleepHours) {
+            challengeWinners[_challengeId].push(challengerList[i]);
+            }
+        }
+    }
+
+
+
+    // function withdraw () {
+        // require challenge to be completed
+        // looks at length of winners list
+        // divides amount in contract by amount of the winners + redistributes
+    // }
+
+
 }
