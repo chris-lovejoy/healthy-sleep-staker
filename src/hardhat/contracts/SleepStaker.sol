@@ -8,18 +8,16 @@ import 'hardhat/console.sol';
 
 contract SleepStaker {
 
-    // ExampleExternalContract public exampleExternalContract; // TODO: rename later
-
-    struct Challenge {
+        struct Challenge {
         uint256 startDate;
         uint256 endDate;
         uint32 sleepHours;
         uint256 stakeAmount;
-        // TODO: consider adding a 'challenge complete' parameter
     }
 
     Challenge[] public challenges;
     mapping(uint => address[]) public challengers;
+    mapping(address => uint) public hoursSlept;
 
     event ChallengeCreated(uint id, uint256 startDate, uint256 endDate, uint32 sleepHours, uint256 stakeAmount);
     event ChallengerJoined(uint challengeId, address challenger);
@@ -28,10 +26,11 @@ contract SleepStaker {
 
     }
 
-    function createChallenge (uint256 _startDate, uint256 _endDate, uint32 _sleepHours, uint256 _stakeAmount) public {
+    function createChallenge (uint256 _startDate, uint256 _endDate, uint32 _sleepHours, uint256 _stakeAmount) public returns (uint) {
         challenges.push(Challenge(_startDate, _endDate, _sleepHours, _stakeAmount));
         uint id = challenges.length - 1;
         emit ChallengeCreated(id, _startDate, _endDate, _sleepHours, _stakeAmount);
+        return id;
     }
 
     function viewChallenge (uint _challengeId) public view returns(uint256, uint256, uint256, uint256) {
@@ -41,7 +40,7 @@ contract SleepStaker {
         return (selectedChallenge.startDate, selectedChallenge.endDate, selectedChallenge.sleepHours, selectedChallenge.stakeAmount);
     }
 
-    function stake(uint _challengeId) public payable returns (uint256) {
+    function stake(uint _challengeId) public payable {
         uint256 requiredStake = challenges[_challengeId].stakeAmount;
         require(msg.value == requiredStake, "Incorrect amount");
         challengers[_challengeId].push(msg.sender);
@@ -50,25 +49,26 @@ contract SleepStaker {
     
     function viewChallengers (uint _challengeId) public view returns (address[] memory) {
         address[] memory challengerList = challengers[_challengeId];
-        for (uint i = 0; i < challengerList.length; i++) {
-            challengerList[i];
-        }
         return challengerList; 
     }
 
+    function checkContractBalance() public view returns (uint) {
+        uint contractBalance = address(this).balance;
+        return contractBalance;
+    }
 
-    // function - timeleft OR daysleft [if function required]
+    function addSleepData (uint _sleepRecordHours) public {
+        hoursSlept[msg.sender] = _sleepRecordHours;
+    }
 
-
-
-    // function - check who met the requirements [ie. slept enough]
-        // or rather - allow people to add their amount of sleep
-        // ()
-
-    // (iv) mapping - record of amount of sleep completed [added via oura ring]
-
-
-    // function - execute redistribute at the end
-        // requires everybody to have submitted sleep results
-
+    function checkSleepDataUpload (uint _challengeId) public view returns(bool) {
+        address[] memory challengerList = challengers[_challengeId];
+        bool allCompleted = true;
+        for (uint i = 0; i < challengerList.length; i++) {
+            if (hoursSlept[challengerList[i]] == 0) {
+                allCompleted = false;
+            }
+        }
+        return allCompleted;
+    }
 }
