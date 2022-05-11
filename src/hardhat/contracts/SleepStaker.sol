@@ -19,11 +19,10 @@ contract SleepStaker {
     }
 
     Challenge[] public challenges;
-
-    mapping(uint => address[]) challengers;
+    mapping(uint => address[]) public challengers;
 
     event ChallengeCreated(uint id, uint256 startDate, uint256 endDate, uint32 sleepHours, uint256 stakeAmount);
-    // TODO: add event for challenger joined
+    event ChallengerJoined(uint challengeId, address challenger);
 
     constructor () {
 
@@ -35,22 +34,26 @@ contract SleepStaker {
         emit ChallengeCreated(id, _startDate, _endDate, _sleepHours, _stakeAmount);
     }
 
-    function viewChallenge (uint _challengeId) public view returns(uint256) {
+    function viewChallenge (uint _challengeId) public view returns(uint256, uint256, uint256, uint256) {
         Challenge memory selectedChallenge;
         selectedChallenge = challenges[_challengeId];
         console.log(selectedChallenge.startDate);
-        return selectedChallenge.startDate; // temporary: use this for testing
-        // return selectedChallenge.startDate, selectedChallenge.endDate, selectedChallenge.sleepHours, selectedChallenge.stakeAmount;
+        return (selectedChallenge.startDate, selectedChallenge.endDate, selectedChallenge.sleepHours, selectedChallenge.stakeAmount);
     }
 
     function stake(uint _challengeId) public payable returns (uint256) {
         uint256 requiredStake = challenges[_challengeId].stakeAmount;
         require(msg.value == requiredStake, "Incorrect amount");
         challengers[_challengeId].push(msg.sender);
+        emit ChallengerJoined(_challengeId, msg.sender);
     }
     
-    function viewChallengers (uint _challengeId) public returns (address[] memory) {
-        return challengers[_challengeId];
+    function viewChallengers (uint _challengeId) public view returns (address[] memory) {
+        address[] memory challengerList = challengers[_challengeId];
+        for (uint i = 0; i < challengerList.length; i++) {
+            challengerList[i];
+        }
+        return challengerList; 
     }
 
 
