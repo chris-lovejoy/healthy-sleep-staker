@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ethers } from "ethers";
 import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
+
 const sleepStakerContractAddress = "0xd63d85a5d053f37850998Ac42d00CC275728c3fE"; // Emerald Testnet
 const sleepStakerABI = abi.abi;
 
@@ -45,8 +46,9 @@ export default function CreateChallenge() {
         
         const createChallengeTx = await sleepStakerContract.createChallenge(startDate, endDate, sleepHours, stakeAmount)
 
-        console.log("Challenge successfully submitted. Transaction ID:", createChallengeTx.hash)
+        console.log("Challenge successfully added to blockchain. Transaction ID: ", createChallengeTx.hash)
         
+        // TODO: add a read function which returns the ID of the challenge created
         // TODO: clear boxes (by updating states) after successful submission.
 
       } else {

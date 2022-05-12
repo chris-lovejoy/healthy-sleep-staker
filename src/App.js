@@ -2,16 +2,15 @@ import './App.css';
 import React, {useState, useEffect } from "react";
 import { ethers } from "ethers";
 import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
-import BigNumber from 'bignumber.js';
 import CreateChallenge from './CreateChallenge';
+import JoinChallenge from './JoinChallenge';
+import ConcludeChallenge from './ConcludeChallenge';
 
 function App() {
 
   const [currentAccount, setCurrentAccount] = useState("");
   const sleepStakerContractAddress = "0xd63d85a5d053f37850998Ac42d00CC275728c3fE"; // Emerald Testnet
   const sleepStakerABI = abi.abi;
-
-  const oasisGreeterContractAddress = "0x6069311C737c0A6Fe4Fc84c6c67d80D6822eDeD3";
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -64,76 +63,8 @@ function App() {
   }, [])
 
 
-  const [selChallengeId, setSelChallengeId] = useState("");
-  const [showChallengeDetails, setShowChallengeDetails] = useState();
-
-  // Viewing a previous challenge
-  const [challStartDate, setChallStartDate] = useState("");
-  const [challEndDate, setChallEndDate] = useState("");
-  const [challSleepHours, setchallSleepHours] = useState("");
-  const [challStakeAmount, setChallStakeAmount] = useState("");
-
-
   
 
-  const handleSelChallengeIdChange = (event) => {
-    console.log("Challenge Id selected:", event.target.value)
-    setSelChallengeId(event.target.value);
-  }
-
-
-
-  const viewChallenge = async event => {
-    event.preventDefault()
-    console.log("selected challenge ID", selChallengeId)
-
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
-
-        const challenge_details = await sleepStakerContract.viewChallenge(selChallengeId);
-        const {0: var_1, 1: var_2, 2: var_3, 3: var_4} = challenge_details;
-        setChallStartDate(new BigNumber(var_1._hex).toNumber());
-        setChallEndDate(new BigNumber(var_2._hex).toNumber());
-        setchallSleepHours(new BigNumber(var_3._hex).toNumber());
-        setChallStakeAmount(new BigNumber(var_4._hex).toNumber());
-
-        console.log(challenge_details);
-
-      } else {
-      console.log("Ethereum object doesn't exist!");
-    }
-  } catch (error) {
-    console.log(error);
-    }
-
-    setShowChallengeDetails(1);
-  }
-
-  const stakeToJoin = async event => {
-    event.preventDefault();
-    // console.log(stakeAmount);
-
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
-        
-        sleepStakerContract.stake(selChallengeId, {value: ethers.utils.parseEther("0.001")});
-      } else {
-      console.log("Ethereum object doesn't exist!");
-    }
-  } catch (error) {
-    console.log(error);
-    }
-  }
 
   return (
     <div className="App">
@@ -153,42 +84,8 @@ function App() {
         )}
 
       <CreateChallenge />
-
-      <h2>Join a challenge</h2>
-      
-          <div>Enter the challenge Id: 
-              <input
-                value={selChallengeId}
-                onChange={handleSelChallengeIdChange}
-                />
-          </div>
-
-          <div>
-              <button onClick={viewChallenge}>View challenge details</button>
-          </div>
-
-          {showChallengeDetails && (
-          <>
-            <div>
-                <h4>Challenge details:</h4>
-                <p>Challenge ID: {selChallengeId}</p>
-                <p>Starting Date: {challStartDate}</p>
-                <p>End Date: {challEndDate}</p>
-                <p>Sleep target (hours): {challSleepHours}</p>
-                <p>Stake amount (ROSE): {challStakeAmount}</p>
- 
-            </div>
-          </>
-        )}
-
-
-          <div>
-            <h4>Join below:</h4>
-            <p>Stake ROSE to join challenge {selChallengeId}:</p>
-            <button onClick={stakeToJoin}>Stake</button>
-          </div>
-
-      <h2>Conclude a challenge</h2>
+      <JoinChallenge />
+      <ConcludeChallenge />
 
     </div>
   );
