@@ -2,13 +2,16 @@ import './App.css';
 import React, {useState, useEffect } from "react";
 import { ethers } from "ethers";
 import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
+import greeter_abi from './hardhat/artifacts/contracts/Greeter.sol/Greeter.json';
+import BigNumber from 'bignumber.js';
 
 function App() {
 
   const [currentAccount, setCurrentAccount] = useState("");
-  const sleepStakerContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // to modiofy
+  const sleepStakerContractAddress = "0xd63d85a5d053f37850998Ac42d00CC275728c3fE"; // Emerald Testnet
   const sleepStakerABI = abi.abi;
 
+  const oasisGreeterContractAddress = "0x6069311C737c0A6Fe4Fc84c6c67d80D6822eDeD3";
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -60,13 +63,20 @@ function App() {
   checkIfWalletIsConnected();
   }, [])
 
-
+  // Inputting information to create new challenge
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [sleepHours, setSleepHours] = useState("");
   const [stakeAmount, setStakeAmount] = useState("");
   const [selChallengeId, setSelChallengeId] = useState("");
   const [showChallengeDetails, setShowChallengeDetails] = useState();
+
+  // Viewing a previous challenge
+  const [challStartDate, setChallStartDate] = useState("");
+  const [challEndDate, setChallEndDate] = useState("");
+  const [challSleepHours, setchallSleepHours] = useState("");
+  const [challStakeAmount, setChallStakeAmount] = useState("");
+
 
   const handleStartDateChange = (event) => {
     console.log("Start Date:", event.target.value)
@@ -100,12 +110,12 @@ function App() {
       const { ethereum } = window;
 
       if (ethereum) {
-        // const provider = new ethers.providers.JsonRpcProvider();
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
         
         sleepStakerContract.createChallenge(startDate, endDate, sleepHours, stakeAmount)
+
 
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -115,9 +125,56 @@ function App() {
     }
   }
 
+  const call_oasis_greeter = async event => {
+    event.preventDefault()
+
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const oasisGreeterContract = new ethers.Contract(oasisGreeterContractAddress, greeter_abi.abi, signer);
+        
+        oasisGreeterContract.setGreeting("I'm on emerald test net! :)")
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   const viewChallenge = async event => {
     event.preventDefault()
-    console.log(selChallengeId)
+    console.log("selected challenge ID", selChallengeId)
+
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
+
+        const challenge_details = await sleepStakerContract.viewChallenge(selChallengeId);
+        const {0: var_1, 1: var_2, 2: var_3, 3: var_4} = challenge_details;
+        setChallStartDate(new BigNumber(var_1._hex).toNumber());
+        setChallEndDate(new BigNumber(var_2._hex).toNumber());
+        setchallSleepHours(new BigNumber(var_3._hex).toNumber());
+        setChallStakeAmount(new BigNumber(var_4._hex).toNumber());
+
+        console.log(challenge_details);
+
+      } else {
+      console.log("Ethereum object doesn't exist!");
+    }
+  } catch (error) {
+    console.log(error);
+    }
+
     setShowChallengeDetails(1);
   }
 
@@ -133,7 +190,7 @@ function App() {
         const signer = provider.getSigner();
         const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
         
-        sleepStakerContract.stake(selChallengeId);
+        sleepStakerContract.stake(selChallengeId, {value: ethers.utils.parseEther("0.001")});
       } else {
       console.log("Ethereum object doesn't exist!");
     }
@@ -158,6 +215,8 @@ function App() {
             </button>
             </>
         )}
+
+      <button onClick={call_oasis_greeter}>Call the oasis greeter function here</button>
 
       <h2>Create a challenge</h2>
           <form onSubmit={submit_challenge}>
@@ -214,7 +273,11 @@ function App() {
             <div>
                 <h4>Challenge details:</h4>
                 <p>Challenge ID: {selChallengeId}</p>
-                <p>(other challenges details to be added here - as an unordered list)</p>
+                <p>Starting Date: {challStartDate}</p>
+                <p>End Date: {challEndDate}</p>
+                <p>Sleep target (hours): {challSleepHours}</p>
+                <p>Stake amount (ROSE): {challStakeAmount}</p>
+ 
             </div>
           </>
         )}
