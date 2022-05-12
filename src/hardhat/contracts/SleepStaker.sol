@@ -1,5 +1,7 @@
 //SPDX-License-Identifier: MIT
 
+// (currently being developed within the eth-scaffold framework)
+
 pragma solidity 0.8.4;
 
 import './ExampleExternalContract.sol';
@@ -8,11 +10,12 @@ import 'hardhat/console.sol';
 
 contract SleepStaker {
 
-   struct Challenge {
+    struct Challenge {
         uint256 startDate;
         uint256 endDate;
         uint32 sleepHours;
         uint256 stakeAmount;
+        uint amountStaked;
     }
 
     Challenge[] public challenges;
@@ -29,7 +32,7 @@ contract SleepStaker {
     }
 
     function createChallenge (uint256 _startDate, uint256 _endDate, uint32 _sleepHours, uint256 _stakeAmount) public returns (uint) {
-        challenges.push(Challenge(_startDate, _endDate, _sleepHours, _stakeAmount));
+        challenges.push(Challenge(_startDate, _endDate, _sleepHours, _stakeAmount, 0));
         uint id = challenges.length - 1;
         emit ChallengeCreated(id, _startDate, _endDate, _sleepHours, _stakeAmount);
         return id;
@@ -38,13 +41,14 @@ contract SleepStaker {
     function viewChallenge (uint _challengeId) public view returns(uint256, uint256, uint256, uint256) {
         Challenge memory selectedChallenge;
         selectedChallenge = challenges[_challengeId];
-        console.log(selectedChallenge.startDate);
         return (selectedChallenge.startDate, selectedChallenge.endDate, selectedChallenge.sleepHours, selectedChallenge.stakeAmount);
     }
 
+    // TODO: consider re-naming to 'join challenge'
     function stake(uint _challengeId) public payable {
         uint256 requiredStake = challenges[_challengeId].stakeAmount;
         require(msg.value == requiredStake, "Incorrect amount");
+        challenges[_challengeId].amountStaked += requiredStake;
         challengers[_challengeId].push(msg.sender);
         emit ChallengerJoined(_challengeId, msg.sender);
     }
@@ -79,20 +83,21 @@ contract SleepStaker {
 
     function identifyChallengeWinners (uint _challengeId) public {
         address[] memory challengerList = challengers[_challengeId];
-    for (uint i = 0; i < challengerList.length; i++) {
-        if (hoursSlept[challengerList[i]] >= challenges[_challengeId].sleepHours) {
-            challengeWinners[_challengeId].push(challengerList[i]);
+        for (uint i = 0; i < challengerList.length; i++) {
+            if (hoursSlept[challengerList[i]] >= challenges[_challengeId].sleepHours) {
+                challengeWinners[_challengeId].push(challengerList[i]);
+                }
             }
-        }
     }
 
-
-
-    // function withdraw () {
-        // require challenge to be completed
-        // looks at length of winners list
-        // divides amount in contract by amount of the winners + redistributes
-    // }
-
+    function withdraw(uint _challengeId) public {
+        require(challengeCompleted[_challengeId] == true, "Challenge not completed yet");
+        uint numWinners = challengeWinners[_challengeId].length;
+        uint winAmount = challenges[_challengeId].amountStaked / numWinners;
+        for (uint i=0; i < numWinners; i++) {
+            (bool sent, ) = challengeWinners[_challengeId][i].call{value: winAmount}("");
+            require(sent, "Failed to send to address");
+        }
+    }
 
 }
