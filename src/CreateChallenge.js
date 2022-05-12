@@ -13,6 +13,7 @@ export default function CreateChallenge() {
   const [sleepHours, setSleepHours] = useState("");
   const [stakeDisplay, setStakeDisplay] = useState("");
   const [stakeAmount, setStakeAmount] = useState("");
+  const [showChallengeId, setShowChallengeId] = useState(false);
 
 useEffect(() => {
     const ROSE_tokens_float = parseFloat(stakeAmount) / 1000000000000000000;
@@ -55,7 +56,8 @@ useEffect(() => {
         const createChallengeTx = await sleepStakerContract.createChallenge(startDate, endDate, sleepHours, stakeAmount);
 
         console.log("Challenge successfully added to blockchain. Transaction ID: ", createChallengeTx.hash)
-        
+
+        setShowChallengeId(true);
         // TODO: add a read function which returns the ID of the challenge created
         // TODO: clear boxes (by updating states) after successful submission.
 
@@ -106,6 +108,12 @@ useEffect(() => {
       <p> </p>
       <button type='submit'>Submit challenge to the Oasis blockchain</button>
     </form>
+
+    {showChallengeId && (
+        <>
+            <div><p>Challenge submitted: ID is 21.</p></div>
+        </>
+    )}
     </div>
   )
 }
