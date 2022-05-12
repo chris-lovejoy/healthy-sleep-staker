@@ -14,7 +14,6 @@ This was originally built as a submission for the Oasis Bloom Hackathon. The dev
 - [Install](#install)
 - [Screenshots](#screenshots)
 - [Next Steps](#next-steps)
-- [Team and Context](#team-and-context)
 
 
 ## About
