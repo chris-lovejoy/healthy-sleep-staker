@@ -2,8 +2,8 @@ import './App.css';
 import React, {useState, useEffect } from "react";
 import { ethers } from "ethers";
 import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
-import greeter_abi from './hardhat/artifacts/contracts/Greeter.sol/Greeter.json';
 import BigNumber from 'bignumber.js';
+import CreateChallenge from './CreateChallenge';
 
 function App() {
 
@@ -63,11 +63,7 @@ function App() {
   checkIfWalletIsConnected();
   }, [])
 
-  // Inputting information to create new challenge
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [sleepHours, setSleepHours] = useState("");
-  const [stakeAmount, setStakeAmount] = useState("");
+
   const [selChallengeId, setSelChallengeId] = useState("");
   const [showChallengeDetails, setShowChallengeDetails] = useState();
 
@@ -78,73 +74,13 @@ function App() {
   const [challStakeAmount, setChallStakeAmount] = useState("");
 
 
-  const handleStartDateChange = (event) => {
-    console.log("Start Date:", event.target.value)
-    setStartDate(event.target.value)
-  }
-
-  const handleEndDateChange = (event) => {
-    console.log("End Date:", event.target.value)
-    setEndDate(event.target.value)
-  }
-
-  const handleSleepHoursChange = (event) => {
-    console.log("Total hours of sleep", event.target.value)
-    setSleepHours(event.target.value)
-  }
-
-   const handleStakeAmountChange = (event) => {
-    console.log("Stake Amount", event.target.value)
-    setStakeAmount(event.target.value)
-  }
+  
 
   const handleSelChallengeIdChange = (event) => {
     console.log("Challenge Id selected:", event.target.value)
     setSelChallengeId(event.target.value);
   }
 
-  const submit_challenge = async event => {
-    event.preventDefault()
-
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
-        
-        sleepStakerContract.createChallenge(startDate, endDate, sleepHours, stakeAmount)
-
-
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const call_oasis_greeter = async event => {
-    event.preventDefault()
-
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const oasisGreeterContract = new ethers.Contract(oasisGreeterContractAddress, greeter_abi.abi, signer);
-        
-        oasisGreeterContract.setGreeting("I'm on emerald test net! :)")
-
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
 
   const viewChallenge = async event => {
@@ -180,7 +116,7 @@ function App() {
 
   const stakeToJoin = async event => {
     event.preventDefault();
-    console.log(stakeAmount);
+    // console.log(stakeAmount);
 
     try {
       const { ethereum } = window;
@@ -201,9 +137,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Welcome to the Healthy Sleep Staker</h1>
+      <h1>🛌 Welcome to the Healthy Sleep Staker 💪</h1>
       <p>(add a description here + an icon).</p> 
-      <p>Note: The challenge starts on and ends at 12pm (noon) on the respective days.</p>
+      <p><em>Note: The challenge starts on and ends at 12pm (noon) on the respective days.</em></p>
 
       {!currentAccount && (
         <>
@@ -216,44 +152,7 @@ function App() {
             </>
         )}
 
-      <button onClick={call_oasis_greeter}>Call the oasis greeter function here</button>
-
-      <h2>Create a challenge</h2>
-          <form onSubmit={submit_challenge}>
-            <div>Starting date: 
-              <input
-                placeholder="format: YYYY-MM-DD" 
-                value={startDate}
-                onChange={handleStartDateChange}
-                />
-            </div>
-            <div>End date: 
-              <input
-                placeholder="format: YYYY-MM-DD" 
-                value={endDate}
-                onChange={handleEndDateChange}
-                />
-            </div>
-            <div>Total hours to sleep (target):
-              <input
-                value={sleepHours}
-                onChange={handleSleepHoursChange}
-                />
-            </div>
-            <div>Stake amount (ROSE):
-              <input
-                value={stakeAmount}
-                onChange={handleStakeAmountChange}
-                />
-            </div>
-
-            <button type='submit'>Submit challenge to the Oasis blockchain</button>
-          </form>
-
-
-          {/* TEMPORARY TEXT - FOR DEVELOPMENT */}
-           <p>The starting date is {startDate}, the ending date is {endDate} and 
-            the average number of hours to sleep is {sleepHours}. Is this correct?</p>
+      <CreateChallenge />
 
       <h2>Join a challenge</h2>
       
@@ -288,7 +187,6 @@ function App() {
             <p>Stake ROSE to join challenge {selChallengeId}:</p>
             <button onClick={stakeToJoin}>Stake</button>
           </div>
-
 
       <h2>Conclude a challenge</h2>
 
