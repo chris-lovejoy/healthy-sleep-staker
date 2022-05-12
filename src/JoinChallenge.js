@@ -55,6 +55,11 @@ export default function JoinChallenge() {
     setShowChallengeDetails(1);
   }
 
+  const hideChallenge = async event => {
+      event.preventDefault()
+      setShowChallengeDetails();
+  }
+
   const stakeToJoin = async event => {
     event.preventDefault();
 
@@ -91,20 +96,24 @@ export default function JoinChallenge() {
             />
       </div>
 
-      <div>
-          <button onClick={viewChallenge}>View challenge details</button>
-      </div>
+      {!showChallengeDetails && (
+          <>
+            <div>
+                <button onClick={viewChallenge}>View challenge details</button>
+            </div>
+          </>
+      )}
 
       {showChallengeDetails && (
       <>
         <div>
+            <button onClick={hideChallenge}>Hide challenge details</button>
             <h4>Challenge details:</h4>
             <p>Challenge ID: {selChallengeId}</p>
             <p>Starting Date: {challStartDate}</p>
             <p>End Date: {challEndDate}</p>
             <p>Sleep target (hours): {challSleepHours}</p>
             <p>Stake amount (ROSE): {challStakeAmount}</p>
-
         </div>
       </>
     )}
