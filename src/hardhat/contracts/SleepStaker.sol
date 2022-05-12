@@ -1,14 +1,12 @@
 //SPDX-License-Identifier: MIT
 
-// (currently being developed within the eth-scaffold framework)
-
 pragma solidity 0.8.4;
 
 import './ExampleExternalContract.sol';
 import 'hardhat/console.sol';
 
 
-contract SleepStaker {
+contract SleepStaker  {
 
     struct Challenge {
         uint256 startDate;
@@ -16,6 +14,7 @@ contract SleepStaker {
         uint32 sleepHours;
         uint256 stakeAmount;
         uint amountStaked;
+        bool winnersIdentified;
     }
 
     Challenge[] public challenges;
@@ -32,7 +31,7 @@ contract SleepStaker {
     }
 
     function createChallenge (uint256 _startDate, uint256 _endDate, uint32 _sleepHours, uint256 _stakeAmount) public returns (uint) {
-        challenges.push(Challenge(_startDate, _endDate, _sleepHours, _stakeAmount, 0));
+        challenges.push(Challenge(_startDate, _endDate, _sleepHours, _stakeAmount, 0, false));
         uint id = challenges.length - 1;
         emit ChallengeCreated(id, _startDate, _endDate, _sleepHours, _stakeAmount);
         return id;
@@ -44,8 +43,7 @@ contract SleepStaker {
         return (selectedChallenge.startDate, selectedChallenge.endDate, selectedChallenge.sleepHours, selectedChallenge.stakeAmount);
     }
 
-    // TODO: consider re-naming to 'join challenge'
-    function stake(uint _challengeId) public payable {
+    function joinChallenge(uint _challengeId) public payable {
         uint256 requiredStake = challenges[_challengeId].stakeAmount;
         require(msg.value == requiredStake, "Incorrect amount");
         challenges[_challengeId].amountStaked += requiredStake;
@@ -53,21 +51,11 @@ contract SleepStaker {
         emit ChallengerJoined(_challengeId, msg.sender);
     }
     
-    function viewChallengers (uint _challengeId) public view returns (address[] memory) {
-        address[] memory challengerList = challengers[_challengeId];
-        return challengerList; 
-    }
-
-    function checkContractBalance() public view returns (uint) {
-        uint contractBalance = address(this).balance;
-        return contractBalance;
-    }
-
-    function addSleepData (uint _sleepRecordHours) public {
+   function addSleepData (uint _sleepRecordHours) public {
         hoursSlept[msg.sender] = _sleepRecordHours;
     }
 
-    function assessDataUpload (uint _challengeId) public {
+    function checkFinished (uint _challengeId) public {
         address[] memory challengerList = challengers[_challengeId];
         challengeCompleted[_challengeId] = true;
         for (uint i = 0; i < challengerList.length; i++) {
@@ -77,17 +65,16 @@ contract SleepStaker {
         }
     }
 
-    function checkDataUpload (uint _challengeId) public view returns(bool) {
-        return challengeCompleted[_challengeId];
-    }
-
     function identifyChallengeWinners (uint _challengeId) public {
-        address[] memory challengerList = challengers[_challengeId];
-        for (uint i = 0; i < challengerList.length; i++) {
-            if (hoursSlept[challengerList[i]] >= challenges[_challengeId].sleepHours) {
-                challengeWinners[_challengeId].push(challengerList[i]);
+        require(challengeCompleted[_challengeId] == true, "Not all data uploaded yet");
+        require(challenges[_challengeId].winnersIdentified == false, "Winners already decided");
+        for (uint i = 0; i < challengers[_challengeId].length; i++) {
+            if (hoursSlept[challengers[_challengeId][i]] >= challenges[_challengeId].sleepHours) {
+                challengeWinners[_challengeId].push(challengers[_challengeId][i]);
                 }
             }
+        challenges[_challengeId].winnersIdentified = true;
+        // TODO: consider adding emit of challenge winners
     }
 
     function withdraw(uint _challengeId) public {
@@ -98,6 +85,21 @@ contract SleepStaker {
             (bool sent, ) = challengeWinners[_challengeId][i].call{value: winAmount}("");
             require(sent, "Failed to send to address");
         }
+    }
+
+    // HELPER FUNCTIONS WHILE WRITING
+    function viewChallengers (uint _challengeId) public view returns (address[] memory) {
+        address[] memory challengerList = challengers[_challengeId];
+        return challengerList; 
+    }
+
+    function checkContractBalance() public view returns (uint) {
+        uint contractBalance = address(this).balance;
+        return contractBalance;
+    }
+
+    function checkDataUpload (uint _challengeId) public view returns(bool) {
+        return challengeCompleted[_challengeId];
     }
 
 }
