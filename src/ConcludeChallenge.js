@@ -144,6 +144,7 @@ export default function ConcludeChallenge() {
                         onChange={handleHoursSleptChange}
                         />
                     </div>
+                    <p> </p>
                     <button type='submit'>Submit Hours Slept</button>
                 </form>
 

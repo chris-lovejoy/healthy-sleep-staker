@@ -65,38 +65,36 @@ export default function CreateChallenge() {
     <form onSubmit={submitChallenge}>
       <div>Starting date: 
         <input
-          placeholder="format: YYYY-MM-DD" 
+          placeholder="format: YYYYMMDD" 
           value={startDate}
           onChange={handleStartDateChange}
           />
       </div>
+      <p> </p>
       <div>End date: 
         <input
-          placeholder="format: YYYY-MM-DD" 
+          placeholder="format: YYYYMMDD" 
           value={endDate}
           onChange={handleEndDateChange}
           />
       </div>
+      <p> </p>
       <div>Total hours to sleep (target):
         <input
           value={sleepHours}
           onChange={handleSleepHoursChange}
           />
       </div>
+      <p> </p>
       <div>Stake amount (ROSE):
         <input
           value={stakeAmount}
           onChange={handleStakeAmountChange}
           />
       </div>
-
+      <p> </p>
       <button type='submit'>Submit challenge to the Oasis blockchain</button>
     </form>
-
-
-    {/* TEMPORARY TEXT - FOR DEVELOPMENT */}
-     <p>The starting date is {startDate}, the ending date is {endDate} and 
-      the average number of hours to sleep is {sleepHours}. Is this correct?</p>
     </div>
   )
 }
