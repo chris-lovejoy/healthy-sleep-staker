@@ -1,6 +1,5 @@
 import './App.css';
 import React, {useState, useEffect } from "react";
-import { ethers } from "ethers";
 import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
 import CreateChallenge from './CreateChallenge';
 import JoinChallenge from './JoinChallenge';
@@ -61,9 +60,6 @@ function App() {
   useEffect(() => {
   checkIfWalletIsConnected();
   }, [])
-
-
-  
 
 
   return (

@@ -89,9 +89,10 @@ export default function JoinChallenge() {
     <div>
     <h2>Join a challenge</h2>
         
-      <div>Select a challenge by entering the challenge ID here: 
+      <div>Select challenge: 
           <input
             value={selChallengeId}
+            placeholder="enter challenge ID"
             onChange={handleSelChallengeIdChange}
             />
       </div>
