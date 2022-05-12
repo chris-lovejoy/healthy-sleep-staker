@@ -21,6 +21,11 @@ export default function JoinChallenge() {
   const handleSelChallengeIdChange = (event) => {
     console.log("Challenge Id selected:", event.target.value)
     setSelChallengeId(event.target.value);
+
+    setChallStartDate("");
+    setChallEndDate("");
+    setchallSleepHours("");
+    setChallStakeAmount("");
   }
 
 
@@ -89,7 +94,8 @@ export default function JoinChallenge() {
     <div>
     <h2>Join a challenge</h2>
         
-      <div>Select challenge: 
+      <div>
+          <p>Select challenge:</p> 
           <input
             value={selChallengeId}
             placeholder="enter challenge ID"
@@ -100,6 +106,7 @@ export default function JoinChallenge() {
       {!showChallengeDetails && (
           <>
             <div>
+                <p> </p>
                 <button onClick={viewChallenge}>View challenge details</button>
             </div>
           </>
@@ -108,6 +115,7 @@ export default function JoinChallenge() {
       {showChallengeDetails && (
       <>
         <div>
+            <p> </p>
             <button onClick={hideChallenge}>Hide challenge details</button>
             <h4>Challenge details:</h4>
             <p>Challenge ID: {selChallengeId}</p>
