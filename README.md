@@ -1,70 +1,26 @@
-# Healthy Sleep Staker
+## Inspiration
+Sleep is a fundamental pillar for a healthy life, but so many people struggle. As a medical doctor, I (Chris) saw many people who suffered from insomnia, narcolepsy and other sleep disorders. And amongst those without sleep disorders, many struggle to get the sleep they would like.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+In searching for a solution, we observed three interesting trends. First is the emergence of gameFi mechanisms for incentivising healthy behaviour, such as STEPN. Second are communities built around health challenges, such as through Strava. Third is the power of financial mechanisms on behaviour and habit formation, such as Beeminder. We decided to combine these three elements to create the Healthy Sleep Staker.
 
-## Available Scripts
+## What it does
+It enables people to develop healthy sleep habits through gameFi and socialFi mechanisms. Users can define sleep challenges and invite their friends. All participants stake ROSE tokens. At the end of the challenge, people share data on how they slept. Those who successfully finish the challenge will share in the prize pool.
 
-In the project directory, you can run:
+## How we built it
+To build the smart contracts, we used the scaffold-eth framework and hardhat for quick iteration. After creating functioning contracts, we followed tutorials from the Oasis Protocol on how to deploy on Emerald. With the contracts successfully deployed on the Emerald Testnet, we built out the front-end using React. 
 
-### `npm start`
+## Challenges we ran into
+When building the smart contracts, some of the indexing was challenging, given different data formats and the mappings of mappings that we used. We believe these data structures were necessary, but haven't limited experience with Solidity prior to this project, it took some time to create the desired functionality. Additionally, there were some edge cases (such as no-one joining a challenge or the same person trying to join twice) which took time to deal with.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Accomplishments that we're proud of
+- Building the world's first sleep-to-earn DApp
+- Building the first DApp on Oasis that utilises sleep data (to our knowledge)
+- Implementing lots of on-chain logic for managing challenges, participants, who met challenge thresholds and for concluding challenges
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## What we learned
+- How fast and cheap transactions (enabled by Oasis) can lead to greater amounts of fast on-chain logic, without harming the user experience
+- How easy it is to deploy the front-end via Vercel
+- Different approaches to staking tokens in smart contracts
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## What's next for The Healthy Sleep Staker
+We want to integrate Oura ring via their API to bring in high-quality sleep data, as well as validation mechanisms to ensure high data integrity. We're going to extend our DApp to other types of habit building, such as meditation, exercise and food consumption. We want to leverage the Oasis Parcel ParaTime to store sensitive health-relevant data in secure enclaves.
