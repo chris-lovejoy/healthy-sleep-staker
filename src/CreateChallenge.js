@@ -11,8 +11,8 @@ export default function CreateChallenge() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [sleepHours, setSleepHours] = useState("");
-  const [stakeDisplay, setStakeDisplay] = useState("");
-  const [stakeAmount, setStakeAmount] = useState("");
+  const [stakeDisplay, setStakeDisplay] = useState(0);
+  const [stakeAmount, setStakeAmount] = useState(0);
   const [showChallengeId, setShowChallengeId] = useState(false);
 
 useEffect(() => {
@@ -109,11 +109,11 @@ useEffect(() => {
       <button type='submit'>Submit challenge to the Oasis blockchain</button>
     </form>
 
-    {showChallengeId && (
+    {/* {showChallengeId && (
         <>
-            <div><p>Challenge submitted: ID is 21.</p></div>
+            <div><p>Challenge successfully submitted. Challenge ID is 26.</p></div>
         </>
-    )}
+    )} */}
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import './App.css';
 import React, {useState, useEffect } from "react";
-import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
 import CreateChallenge from './CreateChallenge';
 import JoinChallenge from './JoinChallenge';
 import ConcludeChallenge from './ConcludeChallenge';
@@ -8,8 +7,6 @@ import ConcludeChallenge from './ConcludeChallenge';
 function App() {
 
   const [currentAccount, setCurrentAccount] = useState("");
-  const sleepStakerContractAddress = "0xd63d85a5d053f37850998Ac42d00CC275728c3fE"; // Emerald Testnet
-  const sleepStakerABI = abi.abi;
 
   const checkIfWalletIsConnected = async () => {
     try {

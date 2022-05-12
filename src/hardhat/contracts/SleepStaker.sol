@@ -2,10 +2,6 @@
 
 pragma solidity 0.8.4;
 
-import './ExampleExternalContract.sol';
-import 'hardhat/console.sol';
-
-
 contract SleepStaker  {
 
     struct Challenge {
@@ -91,6 +87,10 @@ contract SleepStaker  {
     function viewChallengers (uint _challengeId) public view returns (address[] memory) {
         address[] memory challengerList = challengers[_challengeId];
         return challengerList; 
+    }
+
+    function viewChallengeWinners(uint _challengeId) public view returns (address[] memory) {
+        return challengeWinners[_challengeId];
     }
 
     function checkContractBalance() public view returns (uint) {
