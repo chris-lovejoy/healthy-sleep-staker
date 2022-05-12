@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers";
 import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
 
@@ -11,26 +11,34 @@ export default function CreateChallenge() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [sleepHours, setSleepHours] = useState("");
+  const [stakeDisplay, setStakeDisplay] = useState("");
   const [stakeAmount, setStakeAmount] = useState("");
 
+useEffect(() => {
+    const ROSE_tokens_float = parseFloat(stakeAmount) / 1000000000000000000;
+    const ROSE_tokens_string = ROSE_tokens_float.toString();
+    setStakeDisplay(ROSE_tokens_string);
+    // console.log("Stake amount now", stakeAmount);
+}, [stakeDisplay, stakeAmount])
+
   const handleStartDateChange = (event) => {
-    console.log("Start Date:", event.target.value)
+    // console.log("Start Date:", event.target.value)
     setStartDate(event.target.value)
   }
 
   const handleEndDateChange = (event) => {
-    console.log("End Date:", event.target.value)
+    // console.log("End Date:", event.target.value)
     setEndDate(event.target.value)
   }
 
   const handleSleepHoursChange = (event) => {
-    console.log("Total hours of sleep", event.target.value)
+    // console.log("Total hours of sleep", event.target.value)
     setSleepHours(event.target.value)
   }
 
    const handleStakeAmountChange = (event) => {
-    console.log("Stake Amount", event.target.value)
     setStakeAmount(event.target.value)
+    // console.log("Stake Amount", event.target.value)
   }
 
   const submitChallenge = async event => {
@@ -44,7 +52,7 @@ export default function CreateChallenge() {
         const signer = provider.getSigner();
         const sleepStakerContract = new ethers.Contract(sleepStakerContractAddress, sleepStakerABI, signer);
         
-        const createChallengeTx = await sleepStakerContract.createChallenge(startDate, endDate, sleepHours, stakeAmount)
+        const createChallengeTx = await sleepStakerContract.createChallenge(startDate, endDate, sleepHours, stakeAmount);
 
         console.log("Challenge successfully added to blockchain. Transaction ID: ", createChallengeTx.hash)
         
@@ -86,11 +94,14 @@ export default function CreateChallenge() {
           />
       </div>
       <p> </p>
-      <div>Stake amount (ROSE):
+      <div>Stake amount (base units):
         <input
           value={stakeAmount}
           onChange={handleStakeAmountChange}
           />
+      </div>
+      <div>
+          <p>Amount in ROSE: {stakeDisplay}</p>
       </div>
       <p> </p>
       <button type='submit'>Submit challenge to the Oasis blockchain</button>

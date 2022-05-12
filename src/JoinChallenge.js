@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { ethers } from "ethers";
 import abi from './hardhat/artifacts/contracts/SleepStaker.sol/SleepStaker.json';
 import BigNumber from 'bignumber.js';
@@ -16,10 +16,11 @@ export default function JoinChallenge() {
     const [challEndDate, setChallEndDate] = useState("");
     const [challSleepHours, setchallSleepHours] = useState("");
     const [challStakeAmount, setChallStakeAmount] = useState("");
+    // const [stakeDisplay, setStakeDisplay] = useState("");
 
 
   const handleSelChallengeIdChange = (event) => {
-    console.log("Challenge Id selected:", event.target.value)
+    // console.log("Challenge Id selected:", event.target.value)
     setSelChallengeId(event.target.value);
 
     setChallStartDate("");
@@ -28,6 +29,11 @@ export default function JoinChallenge() {
     setChallStakeAmount("");
   }
 
+
+    // useEffect(() => {
+    //     setStakeDisplay(parseFloat((challStakeAmount) / 1000000000000000000).toString());
+    //     console.log("Stake amount now", stakeDisplay);
+    // }, [challStakeAmount, stakeDisplay])
 
   const viewChallenge = async event => {
     event.preventDefault()
@@ -47,8 +53,12 @@ export default function JoinChallenge() {
         setChallEndDate(new BigNumber(var_2._hex).toNumber());
         setchallSleepHours(new BigNumber(var_3._hex).toNumber());
         setChallStakeAmount(new BigNumber(var_4._hex).toNumber());
-
+        
         console.log(challenge_details);
+
+        // const ROSE_display_float = ;
+        // const ROSE_display_string = ROSE_display_float.toString();
+        // (ROSE_display_string);
 
       } else {
       console.log("Ethereum object doesn't exist!");
@@ -122,7 +132,7 @@ export default function JoinChallenge() {
             <p>Starting Date: {challStartDate}</p>
             <p>End Date: {challEndDate}</p>
             <p>Sleep target (hours): {challSleepHours}</p>
-            <p>Stake amount (ROSE): {challStakeAmount}</p>
+            <p>Stake amount (ROSE): {challStakeAmount/1000000000000000000}</p>
         </div>
       </>
     )}
@@ -130,7 +140,7 @@ export default function JoinChallenge() {
 
       <div>
         <h4>Join below:</h4>
-        <p>Stake {challStakeAmount} ROSE to join challenge {selChallengeId}:</p>
+        <p>Stake {challStakeAmount/1000000000000000000} ROSE to join challenge {selChallengeId}:</p>
         <button onClick={stakeToJoin}>Stake</button>
       </div>
       </div>

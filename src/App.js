@@ -65,7 +65,11 @@ function App() {
   return (
     <div className="App">
       <h1>🛌 Welcome to the Healthy Sleep Staker 💪</h1>
-      <p>(add a description here + an icon).</p> 
+      <p><b>Have you ever wanted to develop good sleep habits, but struggled to find the motivation?</b></p>
+      <p>Sleep habits are important, because quality and quantity of sleep affects us in many ways; 
+        it influences our mood, our performance, and our long-term health outcomes</p> 
+      <p>The Healthy Sleep Staker enables you to create sleep challenges, and commit money to achieving your goals.</p>
+      <p>Everybody puts in some ROSE tokens. At the end of the challenge, the pot is divided between all those who completed the challenge.</p>
       <p><em>Note: The challenge starts on and ends at 12pm (noon) on the respective days.</em></p>
 
       {!currentAccount && (

@@ -158,7 +158,6 @@ export default function ConcludeChallenge() {
                 />
             </div>
 
-
         {!challengeFinished && (
         <>
             <div>
@@ -195,6 +194,8 @@ export default function ConcludeChallenge() {
                 </div>
             </>
         )}
+        <p> </p>
+        <p> </p>
         </div>
     )
 }
